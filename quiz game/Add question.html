@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Quizzz</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<header>
+    <nav>
+        <a href="index.html">Quizzz</a>
+        <a href="Add question.html">Add questions</a>
+    </nav>
+</header>
+
+<body>
+    <button class="open-button" onclick="openForm()">Add new questions</button>
+    <div class="form-popup" id="myForm">
+        <form class="form-container" id="addQ">
+            <input type="text" id="mainQ" placeholder="Enter question" required>
+            <input type="text" id="answer1" placeholder="Posible answer" required>
+            <input type="text" id="answer2" placeholder="Posible answer" required>
+            <input type="text" id="answer3" placeholder="Posible answer" required>
+            <input type="text" id="answer4" placeholder="Possible answer" required>
+            <input type="text" id="correctA" placeholder="Right answer" required>
+
+            <button type="submit" class="btn" id="Submit">Insert data</button>
+            <button type="button" class="btn cancel" onclick="closeForm()">Close template</button>
+            <button type="submit" id="clear" onclick="clearData()">Clear data</button>
+        </form>
+    </div>
+    <div>
+        <table id="tryResults">
+            <tr>
+              
+            </tr>
+          </table>
+    </div>
+    <div>
+        
+    </div>
+    <script type="text/javascript">
+
+        //open up the form
+        function openForm() {
+            document.getElementById("myForm").style.display = "block";
+        }
+
+        function closeForm() {
+            document.getElementById("myForm").style.display = "none";
+        }
+
+
+        document.getElementById('myForm').addEventListener("submit", createQuestion);
+
+        
+
+        
+        const tryResults = document.getElementById("tryResults")
+
+        function createQuestion(event) {
+
+            console.log('create question');
+
+            event.preventDefault();
+            var form = {
+                question: document.getElementById("mainQ").value.trim(),
+                A: document.getElementById('answer1').value.trim(),
+                B: document.getElementById('answer2').value.trim(),
+                C: document.getElementById('answer3').value.trim(),
+                D: document.getElementById('answer4').value.trim(),
+                answer: document.getElementById("correctA").value.trim()
+            }
+
+
+
+            event.target.reset();
+
+
+            // get stored questions
+            let storedQuestions = JSON.parse(localStorage.getItem('questions'));
+            if (storedQuestions != null) {
+                storedQuestions.push(form);
+            } else {
+                storedQuestions = [form];
+            }
+            localStorage.setItem('questions', JSON.stringify(storedQuestions));
+            // localStorage.form = JSON.stringify(list);
+            console.log("success");
+            showLocalStorage();
+            window.document.location('/index.html');
+        }
+
+        function showLocalStorage() {
+        tryResults.innerHTML = "";
+            const questions = JSON.parse(localStorage.getItem('questions'));
+            if(questions != null){
+                    for (let i = 0; i < questions.length; i++) {
+                    console.log('q', questions[i]);
+                    tryResults.innerHTML += 'Question: ' + questions[i].question + '</br>' + 'A: ' + questions[i].A + '  B: ' + questions[i].B + '  C: ' + questions[i].C + '  D: ' + questions[i].D + '</br>' + 'Correct Answer: ' + questions[i].answer +  '</br>' + '</br>';
+                }
+            }
+            
+        }
+        showLocalStorage();
+
+        //connect to index.html
+        var queryString = "?para1=" + getItem(questions);
+        window.location.href = "index.html" + queryString;
+
+        //remove all questions
+        function clearData(){
+                    var secretPassword = prompt("you need the password to clear all data!", "password");
+                    if(secretPassword== "blue"){
+                        localStorage.clear();
+                        window.location.reload(true);
+                    }
+                }
+
+    </script>
+</body>
+
+</html>

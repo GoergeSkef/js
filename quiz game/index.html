@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Quizzz</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+	<div>
+		<div class="grid">
+        <div id="quiz">
+            <hr style="margin-bottom: 20px">
+
+            <p id="question"></p>
+
+            <div class="buttons">
+                <button id="btn0"><span id="choice0"></span></button>
+                <button id="btn1"><span id="choice1"></span></button>
+                <button id="btn2"><span id="choice2"></span></button>
+                <button id="btn3"><span id="choice3"></span></button>
+            </div>
+
+            <hr style="margin-top: 50px">
+            <footer>
+                <p id="questionNumber">Question x of y</p>
+            </footer>
+            <button class="open-button" onclick="openForm()">Add new questions</button>
+            <div class="form-popup" id="myForm">
+                <form class="form-container" id="addQ">
+                    <input type="text" id="mainQ" placeholder="Enter question" required>
+                    <input type="text" id="answer1" placeholder="Posible answer" required>
+                    <input type="text" id="answer2" placeholder="Posible answer" required>
+                    <input type="text" id="answer3" placeholder="Posible answer" required>
+                    <input type="text" id="answer4" placeholder="Possible answer" required>
+                    <input type="text" id="correctA" placeholder="Right answer" required>
+
+                    <button type="submit" class="btn" id="Submit">Insert data</button>
+                    <button type="button" class="btn cancel" onclick="closeForm()">Close template</button>
+                    <button type="submit" id="clear" onclick="clearData()">Clear data</button>
+                </form>
+            </div>
+            <button onclick="myFunction()">Check questions</button>
+            <div id="myDIV">
+                <table id="tryResults">
+                    <tr>
+                      
+                    </tr>
+                  </table>
+            </div>
+        </div>
+        
+    </div>
+	</div>
+    <script type="text/javascript">
+       
+
+            
+         function Question(text, choices, answer) {
+                this.text = text;
+                this.choices = choices;
+                this.answer = answer;
+            }
+
+            Question.prototype.CorrectAnswer = function(choice) {
+                return this.answer === choice;
+            }   
+
+
+            function Quiz(questions) {
+                this.score = 0;
+                this.questions = questions;
+                this.questionNumber = 0;
+            }
+
+            Quiz.prototype.getQuestionAnswers = function() {
+                return this.questions[this.questionNumber];
+            }
+
+            Quiz.prototype.guess = function(answer) {
+                if(this.getQuestionAnswers().CorrectAnswer(answer)) {
+                    this.score++;
+                }
+
+                this.questionNumber++;
+            }
+
+            Quiz.prototype.isEnded = function() {
+                return this.questionNumber === this.questions.length;
+            }
+
+
+
+
+            function populate() {
+                if(quiz.isEnded()) {
+                    showScores();
+                }
+                else {
+                    // show question
+                    var element = document.getElementById("question");
+                    element.innerHTML = quiz.getQuestionAnswers().text;
+
+                    // show options
+                    var choices = quiz.getQuestionAnswers().choices;
+                    for(var i = 0; i < choices.length; i++) {
+                        var element = document.getElementById("choice" + i);
+                        element.innerHTML = choices[i];
+                        guess("btn" + i, choices[i]);
+                    }
+
+                    showProgress();
+                }
+            };
+
+            function guess(id, guess) {
+                var button = document.getElementById(id);
+                button.onclick = function() {
+                    quiz.guess(guess);
+                    populate();
+                }
+            };
+
+
+            function showProgress() {
+                var currentQuestion = quiz.questionNumber + 1;
+                var element = document.getElementById("questionNumber");
+                element.innerHTML = "Question " + currentQuestion + " of " + quiz.questions.length;
+            };
+
+            function showScores() {
+                var gameOverHTML = "<h1>Result</h1>";
+                gameOverHTML += "<h2 id='score'> Your scores: " + quiz.score + "</h2>";
+                var element = document.getElementById("quiz");
+                element.innerHTML = gameOverHTML;
+            };
+
+
+
+
+
+
+            // create questions................................
+
+            //open up the form
+            function openForm() {
+                document.getElementById("myForm").style.display = "block";
+            }
+
+            function closeForm() {
+                document.getElementById("myForm").style.display = "none";
+            }
+            //display questions
+            function myFunction() {
+            var x = document.getElementById("myDIV");
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+            }
+
+
+
+            document.getElementById('myForm').addEventListener("submit", createQuestion);
+
+            
+
+            
+            const tryResults = document.getElementById("tryResults")
+
+            
+
+            function createQuestion(event) {
+
+                console.log('create question');
+
+                event.preventDefault();
+                var form = {
+                    question: document.getElementById("mainQ").value.trim(),
+                    A: document.getElementById('answer1').value.trim(),
+                    B: document.getElementById('answer2').value.trim(),
+                    C: document.getElementById('answer3').value.trim(),
+                    D: document.getElementById('answer4').value.trim(),
+                    answer: document.getElementById("correctA").value.trim()
+                }
+
+
+
+                event.target.reset();
+
+
+                // get stored questions
+                let storedQuestions = JSON.parse(localStorage.getItem('questions'));
+                if (storedQuestions != null) {
+                    storedQuestions.push(form);
+                } else {
+                    storedQuestions = [form];
+                }
+                localStorage.setItem('questions', JSON.stringify(storedQuestions));
+                // localStorage.form = JSON.stringify(list);
+                console.log("success");
+                showLocalStorage();
+                
+            }
+
+            const questions = JSON.parse(localStorage.getItem('questions'));
+
+            var filling=[];
+            for(i=0; i<questions.length; i++){
+                filling.push(new Question(questions[i].question, [questions[i].A, questions[i].B, questions[i].C, questions[i].D], questions[i].answer));
+                    //new Question(questions[0].question, [questions[0].A, questions[0].B, questions[0].C, questions[0].D], questions[0].answer),
+                    //new Question(questions[1].question, [questions[1].A, questions[1].B, questions[1].C, questions[1].D], questions[1].answer),
+                    //new Question(questions[2].question, [questions[2].A, questions[2].B, questions[2].C, questions[2].D], questions[2].answer),
+                    
+                
+            }
+
+            // create quiz
+            var quiz = new Quiz(filling);
+
+
+
+            function showLocalStorage() {
+            tryResults.innerHTML = "";
+                
+                if(questions != null){
+                        for (let i = 0; i < questions.length; i++) {
+                        
+                        tryResults.innerHTML += 'Question: ' + questions[i].question + '</br>' + ' //A:' + questions[i].A + '   //B:' + questions[i].B + '   //C:' + questions[i].C + '   //D:' + questions[i].D + '</br>' + 'Correct Answer: ' + questions[i].answer +  '</br>' + '</br>';
+                    }
+                }
+                
+            }
+            showLocalStorage();
+
+
+            //remove all questions
+            function clearData(){
+                        var secretPassword = prompt("you need the password to clear all data!", "password");
+                        if(secretPassword== "blue"){
+                            localStorage.clear();
+                            window.location.reload(true);
+                        }
+                    }
+
+
+            
+
+            // display quiz
+            populate();
+
+    </script>
+</body>
+</html>

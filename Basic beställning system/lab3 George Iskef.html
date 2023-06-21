@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title> lab-3 </title>
+  </head>
+  <body>
+    <script>
+
+      var bastellning = [];
+      var completedbastellning = [];
+
+      //ORDER: cashier function for new order registering
+      function newOrder(){
+        var bastellningObject = {};
+        bastellningObject.customer = prompt("Name");
+        bastellningObject.drinks = prompt("Drinks");
+        bastellningObject.topping = prompt("Topping");
+        bastellningObject.food = prompt("Eatables");
+        console.log(bastellningObject);
+        bastellning.push(bastellningObject);
+
+      }
+      console.table(bastellning);
+      //COMPLETE: barista function for taking orders 
+      function nextOrder() {
+        console.log("Drinks: " + bastellning[0].drink + "  Topping: " + bastellning[0].extra + "Eatables: " + bastellning[0].food);
+        alert("Complete");
+        completedbastellning.push(bastellning.shift() );
+      }
+      
+      //HISTORY: for viewing all completed orders 
+      function orderHistory() {
+        console.table(completedbastellning);
+      }
+
+    </script>
+  </body>
+</html>

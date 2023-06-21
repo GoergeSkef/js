@@ -1,0 +1,40 @@
+body {
+  font-family: "Roboto";
+  color: #FEFFFF;
+}
+
+input {
+  display: inline-block;
+}
+
+.list{
+  float: left;
+  background-color: #3AAFA9;
+  margin:4px;
+  box-shadow:0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+  border-radius: 5px;
+  width: 200px;
+  color: #FEFFFF;
+}
+.list:hover{
+    box-shadow: 0 8px 16px 0  rgba(0,0,0,0.2);
+}
+.list h2{
+  background-color: #2B7A78;
+  margin: 0;
+  padding: 5px 5px 5px 5px;
+}
+
+.list p{
+  padding-left: 8px;
+}
+ul{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+li{
+  margin: 0;
+  padding: 0;
+}
